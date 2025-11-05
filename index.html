@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Trainfo – KRL Companion (Responsive)</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- TOP BAR -->
+  <header class="appbar">
+    <div class="brand" data-to="screen-home">
+      <svg viewBox="0 0 24 24" class="ico"><path d="M4 16a1 1 0 0 0 1 1h1l1 3h2l1-3h6l1 3h2l1-3h1a1 1 0 0 0 1-1v-6c0-3.3-2.7-6-6-6H10C6.7 4 4 6.7 4 10v6zm2-6c0-2.2 1.8-4 4-4h6c2.2 0 4 1.8 4 4v4H6v-4z"/></svg>
+      <span>Trainfo</span>
+    </div>
+    <nav class="topnav">
+      <button class="tab active" data-to="screen-home">🏠<span>Beranda</span></button>
+      <button class="tab" data-to="screen-schedule">🗓️<span>Jadwal</span></button>
+      <button class="tab" data-to="screen-map">🗺️<span>Peta</span></button>
+      <button class="tab" data-to="screen-account">👤<span>Akun</span></button>
+    </nav>
+    <div class="status">
+      <span id="clock">--:-- WIB</span>
+      <button id="btnNotify" class="iconbtn" title="Notifikasi">🔔</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="screen-home" class="screen active">
+      <div class="grid-home">
+        <!-- HERO -->
+        <div class="hero-card card">
+          <div class="hero-left">
+            <h2>Selamat datang di <span>Trainfo</span></h2>
+            <p>Dapatkan info rute, jadwal, cuaca, dan kepadatan KRL secara cepat dalam satu aplikasi.</p>
+            <div class="hero-actions">
+              <a class="btn red" data-to="screen-schedule">Cari Jadwal</a>
+              <a class="btn ghost" data-to="screen-map">Lihat Peta</a>
+            </div>
+          </div>
+          <div class="hero-right">
+            <div class="hero-stat"><b id="statTrips">0</b><span>Perjalanan hari ini</span></div>
+            <div class="hero-stat"><b id="statReports">0</b><span>Laporan kepadatan</span></div>
+            <div class="hero-stat"><b id="statFavs">0</b><span>Rute favorit</span></div>
+          </div>
+          <div class="hero-decoration"></div>
+        </div>
+
+        <!-- RINGKASAN -->
+        <div class="card mini">
+          <p class="label">Situasi Cuaca</p>
+          <div class="row between">
+            <p class="title-sm">
+              <b id="wxStatus">Berawan</b> — <span id="wxStation">St. UI</span> • <span id="wxTemp">27°C</span>
+            </p>
+            <img class="metric-ico" alt="ikon cuaca" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRw21EWjDbVA0cp4tJgTCr0sr4knYMo4ZGBgw&s"/>
+          </div>
+        </div>
+        <div class="card mini">
+          <p class="label">Kepadatan Gerbong</p>
+          <div class="row between">
+            <p class="title-sm"><b id="densityCar">Level 3/5</b> • terakhir <span id="densityAgoCar">—</span></p>
+            <img class="metric-ico" alt="ikon kepadatan gerbong" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9DGB6PS56TOtNieRg8r5jJ_CgiNJD4cXwog&s"/>
+          </div>
+        </div>
+        <div class="card mini">
+          <p class="label">Kepadatan Stasiun</p>
+          <div class="row between">
+            <p class="title-sm"><b id="densitySta">Level 3/5</b> • terakhir <span id="densityAgoSta">—</span></p>
+            <img class="metric-ico" alt="ikon stasiun" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTurubElKzmJG_WUsKRMEtn0zp00aExAqVJBQ&s"/>
+          </div>
+        </div>
+
+        <!-- FAVORIT -->
+        <div class="card big accent favcard">
+          <h3>Rute Favorit Saya</h3>
+          <div id="favChips" class="chips"></div>
+          <button class="btn ghost small" id="btnAddFav">+ Tambah Rute Favorit</button>
+        </div>
+
+        <!-- STATUS VIRTUAL -->
+        <div class="card big statuscard">
+          <p class="label">Status Perjalanan Saya</p>
+          <div class="row between">
+            <div>
+              <h3 id="virtualStatus">Tiba di Stasiun Manggarai</h3>
+              <p class="muted" id="virtualDesc">Perkiraan tiba 10 menit lagi • Gerbong 2 relatif sepi</p>
+            </div>
+            <span class="badge ghost">🚶‍♀️</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== JADWAL ===== -->
+    <section id="screen-schedule" class="screen">
+      <div class="row backrow"><button class="btn ghost" data-to="screen-home">← Kembali ke Beranda</button></div>
+      <div class="grid-schedule">
+        <div class="card">
+          <h3>Cari Jadwal & Rute</h3>
+          <form id="formSchedule" class="form">
+            <div class="row2">
+              <div class="field">
+                <label>Asal</label>
+                <select id="fromStation"></select>
+              </div>
+              <div class="field">
+                <label>Tujuan</label>
+                <select id="toStation"></select>
+              </div>
+            </div>
+            <div class="row2">
+              <div class="field">
+                <label>Tanggal</label>
+                <input type="date" id="datePick">
+              </div>
+              <div class="field">
+                <label>Line</label>
+                <select id="linePick">
+                  <option value="ALL">Semua</option>
+                  <option value="RED">Red Line</option>
+                  <option value="BLUE">Blue Line</option>
+                </select>
+              </div>
+            </div>
+            <div class="row2">
+              <button class="btn red block" type="submit">Cari Jadwal</button>
+              <button class="btn ghost block" type="button" id="btnSaveFav">Simpan sebagai Favorit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="row between">
+            <h4>Hasil Jadwal</h4>
+            <small class="muted" id="scheduleMeta">—</small>
+          </div>
+          <div class="tablewrap">
+            <table class="table" id="tblSchedule">
+              <thead><tr><th>Berangkat</th><th>Tiba</th><th>Durasi</th><th>Line</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PETA ===== -->
+    <section id="screen-map" class="screen">
+      <div class="row backrow"><button class="btn ghost" data-to="screen-home">← Kembali ke Beranda</button></div>
+      <div class="map-layout">
+        <aside class="map-sidebar card">
+          <h3>Peta Rute KRL</h3>
+          <div class="search">
+            <svg viewBox="0 0 24 24" class="ico"><path d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 14 15.5l.3.3v.8L20 22l2-2-6.5-6zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
+            <input id="searchStation" type="text" placeholder="Cari stasiun…">
+            <button class="btn ghost small" id="btnClearSearch">Bersihkan</button>
+          </div>
+
+          <div class="legend">
+            <div><span class="leg swatch red"></span> Red Line</div>
+            <div><span class="leg swatch blue"></span> Blue Line</div>
+            <div><span class="leg swatch route"></span> Rute Aktif</div>
+          </div>
+
+          <div class="map-actions">
+            <button class="btn ghost block" id="btnLokasi">📍 Lokasi Saya</button>
+            <button class="btn ghost block" id="btnReport">📣 Lapor Kepadatan</button>
+          </div>
+        </aside>
+
+        <div class="mapbox">
+          <svg id="mapSvg" class="mapsvg" viewBox="0 0 1200 800" aria-label="Peta KRL">
+            <g id="layer-lines" stroke-linecap="round" fill="none"></g>
+            <g id="layer-stations"></g>
+            <g id="layer-route" stroke="#f59e0b" stroke-width="10" fill="none"></g>
+          </svg>
+
+          <div class="map-ctrl">
+            <button id="zoomIn" title="Perbesar">＋</button>
+            <button id="zoomOut" title="Perkecil">－</button>
+            <button id="resetMap" title="Reset">⟲</button>
+          </div>
+
+          <div id="tooltip" class="tooltip" role="dialog" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="hint muted">Klik stasiun untuk detail. Scroll/drag untuk zoom & geser peta.</div>
+    </section>
+
+    <!-- ===== AKUN ===== -->
+    <section id="screen-account" class="screen">
+      <div class="row backrow"><button class="btn ghost" data-to="screen-home">← Kembali ke Beranda</button></div>
+      <div class="grid-account">
+        <div class="card big accent">
+          <div class="row between">
+            <div>
+              <h3>Akun Saya</h3>
+              <p class="muted">Nadhira • nadhira@example.com</p>
+            </div>
+            <div class="avatar">👤</div>
+          </div>
+          <div class="row2">
+            <button class="btn red block" data-to="screen-schedule">Cari Jadwal & Rute</button>
+            <button class="btn ghost block" id="btnEditProfile">Ubah Profil</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Preferensi & Bantuan</h4>
+          <div class="list">
+            <button class="listitem" id="btnNotifDelay"><span>🔔</span> Notifikasi Delay <em>›</em></button>
+            <button class="listitem" id="btnFaq"><span>❓</span> FAQ & Kontak <em>›</em></button>
+            <button class="listitem danger" id="btnLogout"><span>🚪</span> Keluar <em>›</em></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: FAVORIT -->
+  <dialog id="modalFav" class="modal">
+    <form method="dialog" class="modal-card">
+      <h3>Tambah Rute Favorit</h3>
+      <div class="row2">
+        <div class="field">
+          <label>Asal</label>
+          <select id="favFrom"></select>
+        </div>
+        <div class="field">
+          <label>Tujuan</label>
+          <select id="favTo"></select>
+        </div>
+      </div>
+      <menu class="actions">
+        <button class="btn ghost" value="cancel">Batal</button>
+        <button class="btn red" id="btnFavSave" value="default">Simpan</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <!-- MODAL: LAPOR KEPADATAN -->
+  <dialog id="modalReport" class="modal">
+    <form method="dialog" class="modal-card" id="formReport">
+      <h3>Lapor Kepadatan</h3>
+      <div class="field">
+        <label>Stasiun</label>
+        <select id="reportStation"></select>
+      </div>
+      <div class="field">
+        <label>Level Kepadatan</label>
+        <input type="range" id="reportLevel" min="1" max="5" value="3" />
+        <div class="rangehint"><span>1</span><span>5</span></div>
+      </div>
+      <div class="field">
+        <label>Catatan (opsional)</label>
+        <textarea id="reportNote" rows="3" placeholder="Mis: antrean masuk gerbong panjang"></textarea>
+      </div>
+      <menu class="actions">
+        <button class="btn ghost" value="cancel">Batal</button>
+        <button class="btn red" id="btnReportSend" value="default">Kirim</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <!-- TAB BAR (mobile only) -->
+  <nav class="tabbar">
+    <button class="tab active" data-to="screen-home">🏠<span>Beranda</span></button>
+    <button class="tab" data-to="screen-schedule">🗓️<span>Jadwal</span></button>
+    <button class="tab" data-to="screen-map">🗺️<span>Peta</span></button>
+    <button class="tab" data-to="screen-account">👤<span>Akun</span></button>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>
